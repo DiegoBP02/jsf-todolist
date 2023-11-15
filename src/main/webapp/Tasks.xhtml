@@ -1,26 +1,59 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://xmlns.jcp.org/jsf/html"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
-<h:head>
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	template="WEB-INF/template/Layout.xhtml">
 
-	<meta charset="UTF-8" />
-	<title>Tasks</title>
+	<ui:define name="title">
+		Todolist
+	</ui:define>
 
-	<h:outputStylesheet library="bpdev" name="style.css" />
+	<ui:define name="content">
+		<f:metadata>
+			<f:viewAction action="#{tasksBean.allTasks}" />
+			<f:viewAction action="#{tasksBean.prepareNewTask}" />
+		</f:metadata>
 
-	<f:metadata>
-		<f:viewAction action="#{tasksBean.allTasks}" />
-	</f:metadata>
-
-</h:head>
-
-<body>
-	<div id="conteudo">
 		<h:form id="formulario">
-			<p:dataTable value="#{tasksBean.taskList}"
-				var="task" emptyMessage="No task">
+			<p:messages id="messages" />
+
+			<p:toolbar>
+				<f:facet name="left">
+					<p:outputLabel value="Task name: " for="taskName" />
+					<p:inputText id="taskName" value="#{tasksBean.task.taskName}" resetInput="true"/>
+
+					<p:outputLabel value="Urgency" for="urgencySelect" />
+					<p:selectOneMenu id="urgencySelect"
+						value="#{tasksBean.task.urgency}" resetInput="true">
+						<f:selectItem itemLabel="Selecione..." />
+						<f:selectItems value="#{tasksBean.urgencyList}" var="urgency"
+							itemLabel="#{urgency}" itemValue="#{urgency}" />
+					</p:selectOneMenu>
+
+					<p:commandButton value="Salvar" actionListener="#{tasksBean.save}"
+						update="tasksTable messages" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:inputText id="searchTerm"
+						placeholder="Write a search term here..." size="30"
+						value="#{tasksBean.searchTerm}" />
+
+					<p:commandButton value="Search" icon="fa fa-search"
+						actionListener="#{tasksBean.search}" update="tasksTable messages"
+						process="@this searchTerm" />
+				</f:facet>
+			</p:toolbar>
+
+			<p:spacer height="20px" />
+
+			<p:dataTable id="tasksTable" value="#{tasksBean.taskList}" var="task"
+				emptyMessage="There are no tasks to be displayed" paginator="true"
+				rows="10" paginatorPosition="bottom">
 				<p:column headerText="Task Name">
 					<h:outputText value="#{task.taskName}" />
 				</p:column>
@@ -28,10 +61,9 @@
 				<p:column headerText="Task Urgency">
 					<h:outputText value="#{task.urgency}" />
 				</p:column>
-
 			</p:dataTable>
-		</h:form>
-	</div>
-</body>
 
-</html>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

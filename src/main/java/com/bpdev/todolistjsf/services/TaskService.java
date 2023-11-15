@@ -16,12 +16,12 @@ public class TaskService implements Serializable{
 	private TaskRepository taskRepository;
 	
 	@Transactional
-	public void salvar(Task task) {
+	public void save(Task task) {
 		taskRepository.save(task);
 	}
 	
 	@Transactional
-	public void excluir(Task task) {
+	public void remove(Task task) {
 		taskRepository.remove(task);
 	}
 

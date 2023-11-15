@@ -53,10 +53,6 @@ public class Task implements Serializable {
 		this.urgency = urgency;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
