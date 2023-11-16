@@ -1,11 +1,14 @@
 package com.bpdev.todolistjsf.controller;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.primefaces.context.RequestContext;
 
 import com.bpdev.todolistjsf.model.Task;
 import com.bpdev.todolistjsf.model.Urgency;
@@ -45,7 +48,8 @@ public class TasksBean implements Serializable {
 		
 		messages.info("Task saved successfully!");
 		
-		prepareNewTask();
+		RequestContext.getCurrentInstance().update(Arrays.asList(
+				"frm:tasksTable", "frm:messages"));
 	}
 	
 	public void allTasks() {

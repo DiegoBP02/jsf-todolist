@@ -16,29 +16,11 @@
 			<f:viewAction action="#{tasksBean.prepareNewTask}" />
 		</f:metadata>
 
-		<h:form id="formulario">
+		<h:form id="frm">
 			<p:messages id="messages" />
 
 			<p:toolbar>
 				<f:facet name="left">
-					<p:outputLabel value="Task name: " for="taskName" />
-					<p:inputText id="taskName" value="#{tasksBean.task.taskName}" resetInput="true"/>
-
-					<p:outputLabel value="Urgency" for="urgencySelect" />
-					<p:selectOneMenu id="urgencySelect"
-						value="#{tasksBean.task.urgency}" resetInput="true">
-						<f:selectItem itemLabel="Selecione..." />
-						<f:selectItems value="#{tasksBean.urgencyList}" var="urgency"
-							itemLabel="#{urgency}" itemValue="#{urgency}" />
-					</p:selectOneMenu>
-
-					<p:commandButton value="Salvar" actionListener="#{tasksBean.save}"
-						update="tasksTable messages" />
-
-					<span class="ui-separator"> <span
-						class="ui-icon ui-icon-grip-dotted-vertical" />
-					</span>
-
 					<p:inputText id="searchTerm"
 						placeholder="Write a search term here..." size="30"
 						value="#{tasksBean.searchTerm}" />
@@ -46,7 +28,23 @@
 					<p:commandButton value="Search" icon="fa fa-search"
 						actionListener="#{tasksBean.search}" update="tasksTable messages"
 						process="@this searchTerm" />
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
+
+					<p:commandButton value="New" icon="fa fa-plus"
+						actionListener="#{tasksBean.prepareNewTask}"
+						oncomplete="PF('taskDialogWidgetVar').show()" update="taskDialog"
+						process="@this">
+						<p:resetInput target="taskDialog" />
+					</p:commandButton>
+
+					<span class="ui-separator"> <span
+						class="ui-icon ui-icon-grip-dotted-vertical" />
+					</span>
 				</f:facet>
+
 			</p:toolbar>
 
 			<p:spacer height="20px" />
@@ -62,6 +60,32 @@
 					<h:outputText value="#{task.urgency}" />
 				</p:column>
 			</p:dataTable>
+
+			<p:dialog id="taskDialog" header="New task"
+				widgetVar="taskDialogWidgetVar" modal="true" resizable="false"
+				closeOnEscape="true">
+				<p:messages id="taskMessages" />
+
+				<h:panelGrid id="taskPanelGrid" columns="2"
+					rendered="#{tasksBean.task ne null}">
+					<p:outputLabel value="Task name: " for="taskName" />
+					<p:inputText id="taskName" size="80" maxlength="80"
+						value="#{tasksBean.task.taskName}" required="true"/>
+
+					<p:outputLabel value="Urgency: " for="taskUrgency" />
+					<p:selectOneMenu id="taskUrgency" value="#{tasksBean.task.urgency}" required="true">
+						<f:selectItem itemLabel="Select..." />
+						<f:selectItems value="#{tasksBean.urgencyList}" var="taskUrgency"
+							itemLabel="#{urgency}" itemValue="#{urgency}" />
+					</p:selectOneMenu>
+
+					<h:outputLabel />
+					<p:commandButton value="Save" actionListener="#{tasksBean.save}"
+						update="taskPanelGrid taskMessages"
+						oncomplete="if (!args.validationFailed) PF('taskDialogWidgetVar').hide()"
+						process="taskDialog" />
+				</h:panelGrid>
+			</p:dialog>
 
 		</h:form>
 	</ui:define>
